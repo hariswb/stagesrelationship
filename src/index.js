@@ -1,10 +1,4 @@
 import "./index.css";
-import {getUsers} from "./common/usersAPI"
-console.log("oioi");
+import bar_chart from "./common/charts/barchart" 
 
-const fancyFunc=()=>{
-    return [1,2];
-};
-
-const [a,b]=fancyFunc();
-getUsers().then(json=>console.log(json));
+bar_chart("chartOne")
