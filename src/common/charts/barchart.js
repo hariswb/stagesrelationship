@@ -29,7 +29,7 @@ const ChartOne = function (id){
     
     layer_1
         .append("rect")
-        .style("fill", "papayawhip")
+        .style("fill", "cornsilk")
         .attr("x", 0)
         .attr("y", 0)
         .attr("height", height)
@@ -74,7 +74,7 @@ const ChartOne = function (id){
 
     layer_2
         .attr("stroke", "tomato")
-        .attr("stroke-opacity", 0.3)
+        .attr("stroke-opacity", 0.2)
         .call(g => g.append("g")
         .selectAll("line")
         .data(y.ticks())
