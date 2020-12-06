@@ -4,7 +4,7 @@ import {features_data} from "../data"
 const data = features_data
 
 const boxplot = function (id){
-    const width = 600
+    const width = 700
     const height = 500
     const margin = {top: 100, right: 20, bottom: 30, left: 40}
     const features = data.map(d=>d.key)
@@ -22,7 +22,7 @@ const boxplot = function (id){
                             .join("g");
     const layer_title = svg.append("g")
 
-    console.log(data)
+    // console.log(data)
     
     const x = d3.scaleBand()
         .range([margin.left, width - margin.right])
@@ -126,12 +126,7 @@ const boxplot = function (id){
         .attr("dy", "1em")
         .style("font-size", "1em")
         .text(`of "The Sound of Indonesian Indie" Playlist`);
-    
-    
 
-
-    console.log(d3.schemeSet1)
-    console.log(x(features[1]))
 }
 
 export default boxplot

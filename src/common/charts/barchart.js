@@ -11,6 +11,7 @@ const ChartOne = function (id){
     const svg = d3.select("#".concat(id))
         .append("svg")
         .attr("viewBox", [0, 0, width, height])
+        
     const layer_1 = svg.append("g")
     const layer_2 = svg.append("g")
     const layer_3 = svg.append("g")
