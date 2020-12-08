@@ -5,12 +5,12 @@ import range from "lodash/range"
 const data = correlation_data
 
 const heatmap = function (id){
-    const width = 400
-    const height = 400
+    const width = 500
+    const height = 500
     const margin = {top: 100, right: 20, bottom: 100, left: 100}
     const svg = d3.select("#".concat(id))
         .append("svg")
-        .attr("viewBox", [0, 0, width, height])
+        .attr("viewBox", [0, 0, width+200, height])
     
     const layer_bg = svg.append("g")
     const layer_x_axis = svg.append("g")

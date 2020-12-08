@@ -4,6 +4,34 @@ import uniqBy from "lodash/uniqBy"
 import countBy from "lodash/countBy"
 import sum from "lodash/sum"
 
+function least_square(x_arr,y_arr){
+    const obj = {}
+    obj.n = x_arr.length
+    obj.x = sum(x_arr)
+    obj.y = sum(y_arr)
+    obj.xy = sum(x_arr.map((d,i)=>x_arr[i]*y_arr[i]))
+    obj.xx = sum(x_arr.map(d=>d**2))
+    obj.m = (obj.n*obj.xy - obj.x*obj.y)/(obj.n*obj.xx-obj.x**2)
+    obj.b = (obj.y - obj.m*obj.x)/obj.n
+    const result = []
+    result.push([0,obj.b])
+    result.push([1,obj.m*1+obj.b])
+    return result
+}
+
+function get_two_features(data,feature1, feature2){
+    const result = data.map(d=>{
+        const obj = {}
+        obj[feature1]=d[feature1]
+        obj[feature2]=d[feature2]
+        return obj        
+    })
+    const x_arr = data.map(d=>d[feature1])
+    const y_arr = data.map(d=>d[feature2])
+    result.least_square = least_square(x_arr,y_arr)
+    return result
+}
+
 function get_correlation(data){
     const features_name =  ['danceability','energy','speechiness','acousticness',
                'instrumentalness','liveness','valence']
@@ -78,5 +106,6 @@ function get_yearly(data){
 const yearly_artists_num = get_yearly(bulk)
 const features_data = get_features(bulk)
 const correlation_data = get_correlation(bulk)
+const two_features = get_two_features(bulk,"acousticness","energy")
 
-export {bulk, yearly_artists_num,correlation_data,features_data}
+export {bulk, yearly_artists_num,correlation_data,features_data,two_features}
