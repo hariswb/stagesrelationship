@@ -1,41 +1,34 @@
 import * as d3 from "d3"
-import jalan from "../data/jalan_raya_dki_jakarta.json"
-import kelurahan from "../data/kelurahan_2.json"
-import kecamatan from "../data/kecamatan.json"
-import kabupaten from "../data/kabupaten.json"
-import kepadatan_dki from "../data/luas-wilayah-dan-kepadatan-provinsi-dki-jakarta-tahun-2015.csv"
+import { range } from "lodash"
+import edges from "../data/dolphin_edges.json"
+import nodes from "../data/dolphin_nodes.json"
 
-function compare(kepadatan,kelurahan){
-    const li_kepadatan = kepadatan.map(d=>d.nama_kelurahan)
-    const li_kelurahan = kelurahan.features.map(d=>d.properties.KEL_NAME)
-    // console.log(li_kepadatan)
-    // console.log(li_kelurahan)
-    const falses = []
-    li_kelurahan.forEach(d => {
-        const val = li_kepadatan.includes(d)
-        if(!val){
-            falses.push(d)
-        }
-    });
-    console.log(falses)
-    console.log(li_kepadatan.sort())
-}
-// compare(kepadatan,kelurahan)
 
-function get_kepadatan(kepadatan){
+function getHierarchicalData(nodes,edges){
     const result = {}
-    kepadatan.forEach(d=>{
-        let obj = {}
-        obj.kepadatan_jiwa = d["kepadatan_(jiwa/km2)"]
-        result[d.nama_kelurahan] = obj
-    })
-    console.log()
-    result.values = kepadatan.map(d=>d["kepadatan_(jiwa/km2)"])
+    const arr = []
+    for(let i of range(0,4)){
+        const obj = {}
+        obj.id = i
+        obj.children = nodes.filter(d=>d.group==i)
+                            .map(d=>{
+                                const node ={}
+                                node.id = d.name
+                                node.group = d.group
+                                node.targets = edges.filter(e=>e.source==d.name)
+                                                    .map(e=>e.target)
+                                return node
+                            })
+        arr.push(obj)
+    }
+    result.children = arr
     return result
 }
 
-const kepadatan = get_kepadatan(kepadatan_dki)
+const dataHierarchical = getHierarchicalData(nodes,edges)
 
-// console.log(d3.max(kepadatan.values))
+// console.log(edges)
+// console.log(nodes)
+// console.log(dataHierarchical)
 
-export {kelurahan,jalan, kecamatan,kabupaten, kepadatan}
+export {dataHierarchical}

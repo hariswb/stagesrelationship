@@ -1,7 +1,6 @@
 import "./index.css";
-import map_jakarta from "./common/charts/map_jakarta";
-import {bulk} from "./common/data"
+import edgeBundling from "./common/charts/edgebundling";
 
 // console.log()
 // console.log(bulk)
-map_jakarta("chart_one")
+edgeBundling("chart_one")
