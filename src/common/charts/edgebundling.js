@@ -23,7 +23,6 @@ const edgeBundling = function (id){
                     .size([2 * Math.PI, radius - 100])
 
     const root = tree(bilink(d3.hierarchy(dataHierarchical)));
-    console.log(root)
 
     const line = d3.lineRadial()
                     .curve(d3.curveBundle.beta(0.85))

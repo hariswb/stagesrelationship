@@ -7,7 +7,7 @@ module.exports = {
     },
     output: {
       path: path.resolve(__dirname, "dist"),
-      publicPath: '/',
+      publicPath: '/d3_edge_bundling/',
       filename: 'bundle.js'
     },
     devServer: {

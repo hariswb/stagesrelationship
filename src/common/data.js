@@ -27,8 +27,5 @@ function getHierarchicalData(nodes,edges){
 
 const dataHierarchical = getHierarchicalData(nodes,edges)
 
-// console.log(edges)
-// console.log(nodes)
-// console.log(dataHierarchical)
 
 export {dataHierarchical}
