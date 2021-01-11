@@ -1,21 +1,39 @@
-h1{
-    color:orange
+h1 {
+  color: orange;
 }
 
-.container{
-     display: flex;
-     flex-direction: column;
-     justify-content: space-between;
-} 
-
-.svg-chart{
-    max-width: 700px;
-    max-height: 700px;
-    margin: 20px;
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
-.text-title{
-    font-size: 1.5rem;
-    font-family: Arial,monospace;
-    font-weight: 600;
+.svg-chart {
+  max-width: 700px;
+  max-height: 700px;
+  margin: 20px;
+}
+
+.text-title {
+  font-size: 1.5rem;
+  font-family: Arial, monospace;
+  font-weight: 600;
+}
+
+.interface {
+  margin: auto;
+}
+.interface ul li {
+  display: inline;
+}
+.interface-button {
+  margin: 0;
+  border: 1px solid rgb(36, 36, 36);
+  border-radius: 0.4px;
+  padding: 5px;
+  background-color: rgb(240, 240, 240);
+}
+.interface-button:focus {
+  background-color: rgb(36, 36, 36);
+  color: rgb(240, 240, 240);
 }

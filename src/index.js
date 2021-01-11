@@ -1,4 +1,4 @@
 import "./index.css";
-import edgeBundling from "./common/charts/edgebundling";
+import MovingBubbles from "./common/charts/movingBubbles";
 
-edgeBundling("chart_one")
+MovingBubbles("chart_one")
