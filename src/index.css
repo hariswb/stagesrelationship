@@ -8,10 +8,14 @@ h1 {
   justify-content: space-between;
 }
 
+#movingbubbles-chart {
+  width: 1200px;
+  height: 750px;
+}
+
 .svg-chart {
-  max-width: 700px;
-  max-height: 700px;
-  margin: 20px;
+  max-width: 100%;
+  max-height: 100%;
 }
 
 .text-title {
@@ -37,3 +41,39 @@ h1 {
   background-color: rgb(36, 36, 36);
   color: rgb(240, 240, 240);
 }
+
+.text {
+  font-size: 14;
+  font-family: "Courier New", Courier, monospace;
+}
+
+.text-clock {
+  font-size: 70;
+}
+
+.text-button {
+  font-size: 17;
+  pointer-events: none;
+}
+
+.buttonBg {
+  cursor: pointer;
+}
+
+.container {
+  position: relative;
+  padding-left: 120;
+}
+
+.citation {
+  position: absolute;
+  bottom: 50px;
+  width: 255px;
+}
+
+a{
+  color: rgb(173, 57, 57);
+}
+
+
+

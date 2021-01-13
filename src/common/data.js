@@ -2,13 +2,12 @@ import * as d3 from "d3"
 import { range } from "lodash"
 import d3Array from "d3-array"
 import caseIds from "../data/tucaseid.json"
-import activitiesJson from "../data/activities.json"
 import timeframeJson from "../data/timeframe.json"
+import timeStoryJson from "../data/timeStory.json"
 
 
-const activities = activitiesJson.json_data
 const timeframe = timeframeJson.json_data
-
+const timeStory = timeStoryJson.json_data
 const trCode = {
     0: "Traveling",
     1: "Sleeping",
@@ -48,5 +47,4 @@ function getTimeLine(){
     return timeline;
   }
 
-
-export {caseIds, activities,timeLine,timeframe, trCode}
+export {caseIds, timeLine,timeframe, trCode, timeStory}
