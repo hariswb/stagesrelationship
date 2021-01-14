@@ -4,26 +4,24 @@ import { caseIds, timeLine, trCode, timeframe, timeStory } from "../data";
 
 const MovingBubbles = function (id) {
   const margin = { top: 0, right: 0, bottom: 0, left: 0 },
-    width = 800 - margin.left - margin.right,
-    height = 800 - margin.top - margin.bottom,
+    width = 750 - margin.left - margin.right,
+    height = 750 - margin.top - margin.bottom,
     chart_radius = 750,
-    chart_padding_left = 30,
-    node_radius = 3.5,
+    chart_padding_left = 295,
+    node_radius = 2.7,
     padding = 1, // separation between same-color nodes
     cluster_padding = 1.5, // separation between different-color nodes
     cluster_num = Object.keys(trCode).length,
     maxRadius = 12,
     num_nodes = caseIds.length;
 
-  let SPEED_VAL = 300;
-
   const palette = [
     "#a4b787",
     "#b0cac7", //traveling
     "#f88f01", //sleeping
-    "#184d47", //personal care
-    "#ffd414", //ed
+    "#5eaaa8", //personal care
     "#c70039", //work
+    "#111d5e", //ed
     "#81b214", //eat
     "#f05454", //housework
     "#6a492b", //household
@@ -73,28 +71,66 @@ const MovingBubbles = function (id) {
   layerBg
     .append("rect")
     .attr("fill", "white")
-    .attr("opacity", 1)
+    .attr("opacity",1)
     .attr("x", 0)
     .attr("y", 0)
     .attr("height", height)
     .attr("width", width);
-
   // INTERFACE
+  const interfaceChart = svg.append("g");
+  // CLOCK
+  const layerClock = interfaceChart.append("g").attr("class", "clock");
+  d3.select(".clock").call(clock, "04:00");
 
   // CONTROL BUTTON
+  let buttons = [
+    { name: "SLOW", speed: 300, chosen: true },
+    { name: "MEDIUM", speed: 100, chosen: false },
+    { name: "FAST", speed: 5, chosen: false },
+  ];
 
-  d3.selectAll("#speed .button").on("click", function () {
-    SPEED_VAL = d3.select(this).attr("data-val");
-    d3.select("#speed .current").classed("current", false);
-    d3.select(this).classed("current", true);
-  });
+  const layerButtons = interfaceChart
+    .append("g")
+    .selectAll("g")
+    .data(buttons)
+    .enter()
+    .append("g");
+
+  layerButtons.call(buttonBg);
+  layerButtons.call(buttonText);
 
   // NARRATIVE
+  const layerNarrative = interfaceChart.append("g").attr("class", "narrative");
 
-  d3.select("#narrative")
-    .append("p")
-    .attr("class", "text-narrative")
-    .html(timeStory["04:00:00"].text);
+  d3.select(".narrative").call(textNarrative, timeStory["04:00:00"].text);
+
+  function textNarrative(selection, text) {
+    selection
+      .append("text")
+      .attr("class", "text text-narrative")
+      .text(text)
+      .attr("opacity", 0)
+      .call(wrap, chart_padding_left - 20)
+      .attr("transform", () => `translate(${0}, ${550})`)
+      .transition()
+      .ease("quad-in-out") // control the speed of the transition
+      .duration(1000) // apply it over 2000 milliseconds
+      .attr("transform", () => `translate(${0}, ${150})`)
+      .attr("opacity", 1);
+  }
+
+  // Border line
+
+  const layerBorder = interfaceChart.append("g")
+
+  layerBorder
+    .append("rect")
+    .attr("x",chart_padding_left - 20)
+    .attr("y",0)
+    .attr("width",.5)
+    .attr("height",height)
+    .attr("fill","lightgrey")
+
 
   // MOVING BUBBLES CHART
   const layerChart = svg
@@ -160,6 +196,10 @@ const MovingBubbles = function (id) {
   let timeout;
   let i = 1;
 
+  function toggleSpeed() {
+    return buttons.filter((button) => button.chosen == true)[0].speed;
+  }
+
   function timer() {
     if (timeframe[timeLine[i]]) {
       for (let obj of timeframe[timeLine[i]]) {
@@ -172,23 +212,26 @@ const MovingBubbles = function (id) {
     layerPercentage.selectAll(".text-percentage").remove();
     d3.select(".percentage").call(textPercentage);
 
-    // layerClock.select(".text-clock").remove();
+    layerClock.select(".text-clock").remove();
 
-    d3.selectAll(".text-clock").remove();
-    d3.select("#timecnt")
-      .append("h2")
-      .attr("class", "text-clock")
-      .html(timeLine[i].slice(0, 5));
+    d3.select(".clock").call(clock, timeLine[i].slice(0, 5));
 
     if (timeStory[timeLine[i]]) {
       if (timeStory[timeLine[i]].status === "out") {
-        d3.select(".text-narrative").classed("remove-narrative", true);
+        layerNarrative
+          .select(".text-narrative")
+          .attr("transform", () => `translate(${0}, ${150})`)
+          .transition()
+          .ease("quad-in-out") // control the speed of the transition
+          .duration(500) // apply it over 2000 milliseconds
+          .attr("opacity", 0)
+          .attr("transform", () => `translate(${0}, ${550})`)
+          .remove();
       } else if (timeStory[timeLine[i]].status === "in") {
-        d3.select(".text-narrative").remove();
-        d3.select("#narrative")
-          .append("p")
-          .attr("class", "text-narrative")
-          .html(timeStory[timeLine[i]].text);
+        d3.select(".narrative").call(
+          textNarrative,
+          timeStory[timeLine[i]].text
+        );
       }
     }
 
@@ -199,10 +242,10 @@ const MovingBubbles = function (id) {
       i = 0;
     }
 
-    setTimeout(timer, SPEED_VAL);
+    setTimeout(timer, toggleSpeed());
   }
 
-  timeout = setTimeout(timer, SPEED_VAL);
+  timeout = setTimeout(timer, toggleSpeed());
 
   //
 
@@ -292,11 +335,11 @@ const MovingBubbles = function (id) {
         chart_radius / 2;
       const xField =
         Math.sin(((i + 1) / (cluster_num - 1)) * 2 * Math.PI) *
-          (chart_radius / 2 - 20) +
+          (chart_radius / 2 - 50) +
         chart_radius / 2;
       const yField =
         Math.cos(((i + 1) / (cluster_num - 1)) * 2 * Math.PI) *
-          (chart_radius / 2 - 20) +
+          (chart_radius / 2 - 50) +
         chart_radius / 2;
       foci[key] = {
         name: trCode[key],
@@ -329,6 +372,57 @@ const MovingBubbles = function (id) {
       });
   }
 
+  function clock(selection, text) {
+    selection
+      .append("text")
+      .attr("class", "text text-clock")
+      .attr("transform", function (d) {
+        return `translate(${margin.left}, ${70})`;
+      })
+      .text(text);
+  }
+
+  function buttonBg(selection) {
+    selection
+      .append("rect")
+      .attr("class", "buttonBg")
+      .attr("x", 0)
+      .attr("y", 0)
+      .attr("width", 70)
+      .attr("height", 25)
+      .attr("stroke", "lightgrey")
+      .attr("fill", (d) => (d.chosen ? "lightgrey" : "white"))
+      .attr("transform", function (d, i) {
+        return "translate(" + 70 * i + "," + 82 + ")";
+      })
+      .on("click", (d, i) => {
+        const arr = [0, 1, 2];
+        for (let j of arr) {
+          buttons[j].chosen = i === j ? true : false;
+        }
+        layerButtons.selectAll(".buttonBg").remove();
+        layerButtons.call(buttonBg);
+
+        layerButtons.selectAll(".text-button").remove();
+        layerButtons.call(buttonText);
+      });
+  }
+
+  function buttonText(selection) {
+    selection
+      .append("text")
+      .attr("class", "text text-button")
+      .style("background-color", "blue")
+      .text(function (d) {
+        return d.name;
+      })
+      .attr("y", 100)
+      .attr("x", function (d, i) {
+        const textWidth = this.getComputedTextLength();
+        return i * 70 + (70 - textWidth) / 2;
+      });
+  }
+
   function nodeDefault(caseId) {
     return {
       id: caseId,
@@ -338,8 +432,40 @@ const MovingBubbles = function (id) {
       choice: 1,
     };
   }
-
-
+  function wrap(text, width) {
+    text.each(function () {
+      var text = d3.select(this),
+        words = text.text().split(/\s+/).reverse(),
+        word,
+        line = [],
+        lineNumber = 0,
+        lineHeight = 1.1, // ems
+        x = text.attr("x"),
+        y = text.attr("y"),
+        dy = 0, //parseFloat(text.attr("dy")),
+        tspan = text
+          .text(null)
+          .append("tspan")
+          .attr("x", x)
+          .attr("y", y)
+          .attr("dy", dy + "em");
+      while ((word = words.pop())) {
+        line.push(word);
+        tspan.text(line.join(" "));
+        if (tspan.node().getComputedTextLength() > width) {
+          line.pop();
+          tspan.text(line.join(" "));
+          line = [word];
+          tspan = text
+            .append("tspan")
+            .attr("x", 0)
+            .attr("y", y)
+            .attr("dy", lineHeight + dy + "em")
+            .text(word);
+        }
+      }
+    });
+  }
 };
 
 export default MovingBubbles;
