@@ -1,4 +1,4 @@
 import "./index.css";
-import MovingBubbles from "./common/charts/movingBubbles";
+import StagesRelationship from "./common/charts/StagesRelationship";
 
-MovingBubbles("movingbubbles-chart")
+StagesRelationship("stages-relationship-chart")
